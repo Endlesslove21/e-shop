@@ -84,6 +84,9 @@ const Header = () => {
               <NavLink className={activeLink} to="/order-history">
                 My orders
               </NavLink>
+              <NavLink onClick={logoutUser} to="/">
+                Logout
+              </NavLink>
             </span>
 
             {/* cart */}
