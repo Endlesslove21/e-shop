@@ -35,6 +35,8 @@ const Header = () => {
     setShowMenu(false);
   };
 
+  const logoutUser = () => {};
+
   return (
     <header>
       <div className={styles.header}>
