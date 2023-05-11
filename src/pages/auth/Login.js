@@ -1,18 +1,24 @@
-import { useState } from "react";
+import React, { useContext, useState } from "react";
 import styles from "./auth.module.scss";
 import loginImg from "../../assets/login.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import Card from "../../components/card/Card";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../../firebase/config";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Loader from "../../components/loader/Loader";
+import LogoutContext from "../../context/logout-context";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState("false");
+  const { isLogout, setIsLogout } = useContext(LogoutContext);
 
   const navigate = useNavigate();
 
@@ -20,17 +26,17 @@ const Login = () => {
 
   const loginUser = (e) => {
     e.preventDefault();
-    console.log(email, password);
     setIsLoading(true);
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
+
         setIsLoading(false);
         toast.success("Login successful...");
         navigate("/");
+        setIsLogout(false);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -39,10 +45,24 @@ const Login = () => {
       });
   };
 
+  // login wwith google account
+  const provider = new GoogleAuthProvider();
+
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        toast.success("Login successfully");
+        navigate("/");
+        setIsLogout(false);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+
   return (
     <>
-      <ToastContainer />
-
       <section className={`container ${styles.auth}`}>
         <div className={styles.img}>
           <img src={loginImg} alt="login" width="400" />
@@ -78,7 +98,10 @@ const Login = () => {
               <p>-- or --</p>
             </form>
 
-            <button className="--btn --btn-danger --btn-block">
+            <button
+              onClick={signInWithGoogle}
+              className="--btn --btn-danger --btn-block"
+            >
               <FaGoogle color="#fff" /> Login With Google
             </button>
 

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "../../components/card/Card";
 import { Link } from "react-router-dom";
 import resetImg from "../../assets/forgot.png";
 import styles from "./auth.module.scss";
 
 const Reset = () => {
+  const [email, setEmail] = useState("");
+
   return (
     <section className={`container ${styles.auth}`}>
       {/* img */}
@@ -18,7 +20,13 @@ const Reset = () => {
           <h2>Reset Password</h2>
 
           <form>
-            <input type="text" placeholder="Email" required />
+            <input
+              type="text"
+              placeholder="Email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
             <button className="--btn --btn-primary --btn-block">
               Reset Password

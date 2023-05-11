@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./Header.module.scss";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/config";
+import { toast } from "react-toastify";
+import LogoutContext from "../../context/logout-context";
 const logo = (
   <Link to="/">
     <h2>
@@ -26,6 +30,9 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : ``);
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const { isLogout, setIsLogout } = useContext(LogoutContext);
+
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -35,7 +42,17 @@ const Header = () => {
     setShowMenu(false);
   };
 
-  const logoutUser = () => {};
+  const logoutUser = () => {
+    signOut(auth)
+      .then(() => {
+        toast.success("Logout successfully");
+        setIsLogout(true);
+        navigate("/");
+      })
+      .catch((error) => {
+        alert("No account is loggined");
+      });
+  };
 
   return (
     <header>
@@ -86,9 +103,12 @@ const Header = () => {
               <NavLink className={activeLink} to="/order-history">
                 My orders
               </NavLink>
-              <NavLink onClick={logoutUser} to="/">
-                Logout
-              </NavLink>
+
+              {!isLogout && (
+                <NavLink onClick={logoutUser} to="/">
+                  Logout
+                </NavLink>
+              )}
             </span>
 
             {/* cart */}
