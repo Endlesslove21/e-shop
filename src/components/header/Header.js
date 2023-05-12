@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./Header.module.scss";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
@@ -8,6 +8,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
 import LogoutContext from "../../context/logout-context";
+import { onAuthStateChanged } from "firebase/auth";
+
 const logo = (
   <Link to="/">
     <h2>
@@ -31,6 +33,17 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : ``);
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const { isLogout, setIsLogout } = useContext(LogoutContext);
+  const [displayName, setIsDisplayName] = useState("");
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        console.log(user);
+      } else {
+      }
+    });
+  }, []);
 
   const navigate = useNavigate();
 
