@@ -5,7 +5,7 @@ import styles from "./auth.module.scss";
 import registerImg from "../../assets/register.png";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import Loader from "../../components/loader/Loader";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [cPassWord, setCPassWord] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,6 +32,13 @@ const Register = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
+
+        updateProfile(auth.currentUser, {
+          displayName: name,
+        })
+          .then(() => {})
+          .catch((err) => {});
+
         console.log(user);
         setIsLoading(false);
         toast.success("Registration succescful...");
@@ -53,6 +61,13 @@ const Register = () => {
             <h2>Register</h2>
 
             <form onSubmit={registerUser}>
+              <input
+                type="text"
+                placeholder="Name"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
               <input
                 type="text"
                 placeholder="Email"

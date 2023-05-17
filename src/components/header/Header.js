@@ -9,6 +9,9 @@ import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
 import LogoutContext from "../../context/logout-context";
 import { onAuthStateChanged } from "firebase/auth";
+import { FaUser } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { SET_ACTIVE_USER } from "../../redux/slice/authSlice";
 
 const logo = (
   <Link to="/">
@@ -33,14 +36,26 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : ``);
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const { isLogout, setIsLogout } = useContext(LogoutContext);
-  const [displayName, setIsDisplayName] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
+  const dispatch = useDispatch();
+
+  // monitor sign currently sign in user
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        const uid = user.uid;
         console.log(user);
+        setDisplayName(user.displayName);
+
+        dispatch(
+          SET_ACTIVE_USER({
+            email: user.email,
+            userName: user.displayName,
+            userID: user.uid,
+          })
+        );
       } else {
+        setDisplayName("");
       }
     });
   }, []);
@@ -107,21 +122,37 @@ const Header = () => {
 
           <div onClick={hideMenu} className={styles["header-right"]}>
             <span className={styles.links}>
-              <NavLink className={activeLink} to="/login">
-                Login
-              </NavLink>
-              <NavLink className={activeLink} to="/register">
-                Register
-              </NavLink>
-              <NavLink className={activeLink} to="/order-history">
-                My orders
-              </NavLink>
+              {isLogout && (
+                <NavLink className={activeLink} to="/login">
+                  Login
+                </NavLink>
+              )}
 
               {!isLogout && (
-                <NavLink onClick={logoutUser} to="/">
+                <a href="#">
+                  <FaUser size={16} />
+                  Hi, {displayName}
+                </a>
+              )}
+
+              {!isLogout && (
+                <NavLink
+                  style={{ marginRight: "10px" }}
+                  onClick={logoutUser}
+                  to="/"
+                >
                   Logout
                 </NavLink>
               )}
+              {isLogout && (
+                <NavLink className={activeLink} to="/register">
+                  Register
+                </NavLink>
+              )}
+
+              <NavLink className={activeLink} to="/order-history">
+                My orders
+              </NavLink>
             </span>
 
             {/* cart */}
