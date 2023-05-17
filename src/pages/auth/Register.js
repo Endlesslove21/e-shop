@@ -31,15 +31,16 @@ const Register = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
-        const user = userCredential.user;
+        // const user = userCredential.user;
+        if (name) {
+          updateProfile(auth.currentUser, {
+            displayName: name,
+          })
+            .then(() => {})
+            .error((error) => {});
+        }
 
-        updateProfile(auth.currentUser, {
-          displayName: name,
-        })
-          .then(() => {})
-          .catch((err) => {});
-
-        console.log(user);
+        // console.log(user);
         setIsLoading(false);
         toast.success("Registration succescful...");
         navigate("/login");
@@ -64,7 +65,6 @@ const Register = () => {
               <input
                 type="text"
                 placeholder="Name"
-                required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />

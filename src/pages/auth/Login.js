@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import styles from "./auth.module.scss";
 import loginImg from "../../assets/login.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,17 +12,13 @@ import {
 import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
 import Loader from "../../components/loader/Loader";
-import LogoutContext from "../../context/logout-context";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState("false");
-  const { isLogout, setIsLogout } = useContext(LogoutContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-
-  console.log(isLoading);
 
   const loginUser = (e) => {
     e.preventDefault();
@@ -31,12 +27,9 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
-        const user = userCredential.user;
-
         setIsLoading(false);
         toast.success("Login successful...");
         navigate("/");
-        setIsLogout(false);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -51,10 +44,8 @@ const Login = () => {
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        const user = result.user;
         toast.success("Login successfully");
         navigate("/");
-        setIsLogout(false);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -63,6 +54,8 @@ const Login = () => {
 
   return (
     <>
+      {isLoading && <Loader />}
+
       <section className={`container ${styles.auth}`}>
         <div className={styles.img}>
           <img src={loginImg} alt="login" width="400" />

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Header.module.scss";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
@@ -7,12 +7,15 @@ import { AiOutlineClose } from "react-icons/ai";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
-import LogoutContext from "../../context/logout-context";
 import { onAuthStateChanged } from "firebase/auth";
 import { FaUser } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { SET_ACTIVE_USER } from "../../redux/slice/authSlice";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  REMOVE_ACTIVE_USER,
+  SET_ACTIVE_USER,
+  selectIsLoggedIn,
+} from "../../redux/slice/authSlice";
+import ShowOnLogin, { ShowOnLogout } from "../hiddenLink/hiddenLink";
 const logo = (
   <Link to="/">
     <h2>
@@ -35,7 +38,6 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : ``);
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const { isLogout, setIsLogout } = useContext(LogoutContext);
   const [displayName, setDisplayName] = useState("");
 
   const dispatch = useDispatch();
@@ -44,8 +46,15 @@ const Header = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user);
-        setDisplayName(user.displayName);
+        //custom display name to display on header
+        if (!!!user.displayName) {
+          const u1 = user.email.substring(0, user.email.indexOf("@"));
+          const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
+          console.log(uName);
+          setDisplayName(uName);
+        } else {
+          setDisplayName(user.displayName);
+        }
 
         dispatch(
           SET_ACTIVE_USER({
@@ -56,9 +65,10 @@ const Header = () => {
         );
       } else {
         setDisplayName("");
+        dispatch(REMOVE_ACTIVE_USER());
       }
     });
-  }, []);
+  }, [dispatch, displayName]);
 
   const navigate = useNavigate();
 
@@ -74,8 +84,8 @@ const Header = () => {
     signOut(auth)
       .then(() => {
         toast.success("Logout successfully");
-        setIsLogout(true);
-        navigate("/");
+
+        navigate("/login");
       })
       .catch((error) => {
         alert("No account is loggined");
@@ -109,6 +119,10 @@ const Header = () => {
             </li>
 
             <li>
+              <button className="--btn --btn-primary">Admin</button>
+            </li>
+
+            <li>
               <NavLink to="/" className={activeLink}>
                 Home
               </NavLink>
@@ -122,20 +136,20 @@ const Header = () => {
 
           <div onClick={hideMenu} className={styles["header-right"]}>
             <span className={styles.links}>
-              {isLogout && (
+              <ShowOnLogout>
                 <NavLink className={activeLink} to="/login">
                   Login
                 </NavLink>
-              )}
+              </ShowOnLogout>
 
-              {!isLogout && (
-                <a href="#">
+              <ShowOnLogin>
+                <a href="#home">
                   <FaUser size={16} />
                   Hi, {displayName}
                 </a>
-              )}
+              </ShowOnLogin>
 
-              {!isLogout && (
+              <ShowOnLogin>
                 <NavLink
                   style={{ marginRight: "10px" }}
                   onClick={logoutUser}
@@ -143,20 +157,22 @@ const Header = () => {
                 >
                   Logout
                 </NavLink>
-              )}
-              {isLogout && (
+              </ShowOnLogin>
+
+              <ShowOnLogout>
                 <NavLink className={activeLink} to="/register">
                   Register
                 </NavLink>
-              )}
-
-              <NavLink className={activeLink} to="/order-history">
-                My orders
-              </NavLink>
+              </ShowOnLogout>
+              <ShowOnLogin>
+                <NavLink className={activeLink} to="/order-history">
+                  My orders
+                </NavLink>
+              </ShowOnLogin>
             </span>
 
             {/* cart */}
-            {cart}
+            <ShowOnLogin>{cart}</ShowOnLogin>
           </div>
         </nav>
 
