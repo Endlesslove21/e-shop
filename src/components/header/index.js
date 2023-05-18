@@ -9,13 +9,13 @@ import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
 import { onAuthStateChanged } from "firebase/auth";
 import { FaUser } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   REMOVE_ACTIVE_USER,
   SET_ACTIVE_USER,
-  selectIsLoggedIn,
 } from "../../redux/slice/authSlice";
 import ShowOnLogin, { ShowOnLogout } from "../hiddenLink/hiddenLink";
+import AdminOnlyRoute, { AdminOnlyLink } from "../adminOnlyRoute";
 const logo = (
   <Link to="/">
     <h2>
@@ -119,7 +119,11 @@ const Header = () => {
             </li>
 
             <li>
-              <button className="--btn --btn-primary">Admin</button>
+              <Link to={"/admin/home"}>
+                <AdminOnlyLink>
+                  <button className="--btn --btn-primary">Admin</button>
+                </AdminOnlyLink>
+              </Link>
             </li>
 
             <li>
@@ -144,7 +148,11 @@ const Header = () => {
 
               <ShowOnLogin>
                 <a href="#home">
-                  <FaUser size={16} />
+                  <span
+                    style={{ display: "inline-block", alignSelf: "center" }}
+                  >
+                    <FaUser size={16} />
+                  </span>
                   Hi, {displayName}
                 </a>
               </ShowOnLogin>

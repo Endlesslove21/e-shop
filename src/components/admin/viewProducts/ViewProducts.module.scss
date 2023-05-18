@@ -1,0 +1,41 @@
+.table {
+  padding: 10px;
+  width: 100%;
+  overflow-x: auto;
+
+  .search {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 1.4rem;
+
+    th {
+      border: 1px solid #eee;
+    }
+
+    th,
+    td {
+      vertical-align: center;
+      text-align: center;
+      padding: 8px;
+      &.icons {
+        > * {
+          margin-right: 5px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    tr {
+      border-bottom: 1px solid #ccc;
+    }
+
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+  }
+}

@@ -3,9 +3,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Header, Footer } from "./components";
 
 //Components
-import { Home, Contact, Register, Login, Reset } from "./pages";
+import { Home, Contact, Register, Login, Reset, Admin } from "./pages";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminOnlyRoute from "./components/adminOnlyRoute";
 
 function App() {
   return (
@@ -30,6 +31,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<Reset />} />
+          <Route
+            path="/admin/*"
+            element={
+              <AdminOnlyRoute>
+                <Admin />
+              </AdminOnlyRoute>
+            }
+          />
         </Routes>
         <Footer />
       </BrowserRouter>

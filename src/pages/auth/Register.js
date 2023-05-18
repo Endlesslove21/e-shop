@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Card from "../../components/card/Card";
+import Card from "../../components/card";
 import { Link } from "react-router-dom";
 import styles from "./auth.module.scss";
 import registerImg from "../../assets/register.png";
@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/config";
-import Loader from "../../components/loader/Loader";
+import Loader from "../../components/loader";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
