@@ -17,9 +17,85 @@ const filterSlice = createSlice({
       );
       state.filteredProducts = tempProducts;
     },
+
+    SORT_PRODUCTS(state, action) {
+      const { products, sort } = action.payload;
+      let tempProducts = [];
+
+      switch (sort) {
+        case "latest":
+          tempProducts = products;
+          break;
+        case "lowest-price":
+          tempProducts = products.slice().sort((a, b) => {
+            return a.price - b.price;
+          });
+          break;
+        case "highest-price":
+          tempProducts = products.slice().sort((a, b) => {
+            return b.price - a.price;
+          });
+          break;
+        case "a-z":
+          tempProducts = products.slice().sort((a, b) => {
+            return a.name.localeCompare(b.name);
+          });
+          break;
+        case "z-a":
+          tempProducts = products.slice().sort((a, b) => {
+            return b.name.localeCompare(a.name);
+          });
+          break;
+        default:
+          break;
+      }
+
+      state.filteredProducts = tempProducts;
+    },
+
+    FILTER_BY_CATEGORY(state, action) {
+      const { products, category } = action.payload;
+      let tempProducts = [];
+      if (category === "All") {
+        tempProducts = products;
+      } else {
+        tempProducts = products.filter(
+          (product) => product.category === category
+        );
+      }
+
+      state.filteredProducts = tempProducts;
+    },
+
+    FILTER_BY_BRAND(state, action) {
+      const { products, brand } = action.payload;
+      let tempProducts = [];
+      if (brand === "All") {
+        tempProducts = products;
+      } else {
+        tempProducts = products.filter((product) => product.brand === brand);
+      }
+
+      state.filteredProducts = tempProducts;
+    },
+
+    FILTER_BY_PRICE(state, action) {
+      const { products, price } = action.payload;
+      let filteredProduct = products.filter(
+        (product) => product.price <= price
+      );
+
+      state.filteredProducts = filteredProduct;
+    },
   },
 });
 
-export const { FILTER_BY_SEARCH } = filterSlice.actions;
+export const {
+  FILTER_BY_SEARCH,
+  SORT_PRODUCTS,
+  FILTER_BY_CATEGORY,
+  FILTER_BY_BRAND,
+  FILTER_BY_PRICE,
+} = filterSlice.actions;
 export const selectFilterProducts = (state) => state.filter.filteredProducts;
 export default filterSlice.reducer;
