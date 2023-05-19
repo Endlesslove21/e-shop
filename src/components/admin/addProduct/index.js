@@ -1,10 +1,15 @@
 import { useState } from "react";
 import styles from "./AddProducts.module.scss";
 import Card from "../../card";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { db, storage } from "../../../firebase/config";
 import { toast } from "react-toastify";
-import { Timestamp, addDoc, collection } from "firebase/firestore";
+import { Timestamp, addDoc, collection, doc, setDoc } from "firebase/firestore";
 import Loader from "../../loader";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -39,15 +44,17 @@ const initialState = {
 };
 
 const AddProduct = () => {
-  const [product, setProduct] = useState({ ...initialState });
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-
   const navigate = useNavigate();
   const { id } = useParams();
   const products = useSelector(selectedProducts);
-
   const productEdit = products.find((product) => product.id === id);
+
+  const [product, setProduct] = useState(() => {
+    const state = detectForm(id, { ...initialState }, productEdit);
+    return state;
+  });
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   function detectForm(id, f1, f2) {
     if (id === "ADD") {
@@ -64,6 +71,8 @@ const AddProduct = () => {
       [name]: value,
     });
   };
+
+  //uploading image, set progress upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
@@ -117,8 +126,27 @@ const AddProduct = () => {
   const editProduct = (e) => {
     e.preventDefault();
     setIsLoading(true);
+    //delete pre image when updating new image
+    if (product.imageURL !== productEdit.imageURL) {
+      const imgRef = ref(storage, productEdit.imageURL);
+      deleteObject(imgRef);
+    }
 
+    //edit product by id
     try {
+      setDoc(doc(db, "products", id), {
+        name: product.name,
+        imageURL: product.imageURL,
+        price: Number(product.price),
+        category: product.category,
+        brand: product.brand,
+        desc: product.desc,
+        createdAt: product.createdAt,
+        editedAt: Timestamp.now().toDate(),
+      });
+      setIsLoading(false);
+      toast.success("Product edited successfully.");
+      navigate("/admin/all-products");
     } catch (error) {
       setIsLoading(false);
       toast.error(error.message);

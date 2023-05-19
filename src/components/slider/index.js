@@ -14,7 +14,7 @@ const Slider = () => {
 
   const autoScroll = true;
   let slideInterval;
-  let interTime = 2000;
+  let interTime = 10000;
 
   useEffect(() => {
     if (autoScroll) {

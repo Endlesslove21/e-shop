@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 //Pages
-import { Header, Footer } from "./components";
+import { Header, Footer, ProductDetails } from "./components";
 
 //Components
 import { Home, Contact, Register, Login, Reset, Admin } from "./pages";
@@ -31,6 +31,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<Reset />} />
+
           <Route
             path="/admin/*"
             element={
@@ -39,6 +40,7 @@ function App() {
               </AdminOnlyRoute>
             }
           />
+          <Route path="/product-details/:id" element={<ProductDetails />} />
         </Routes>
         <Footer />
       </BrowserRouter>
