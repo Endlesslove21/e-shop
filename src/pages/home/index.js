@@ -20,7 +20,7 @@ const Home = () => {
   // }, []);
   return (
     <div>
-      {/* <Slider /> */}
+      <Slider />
       <Product />
     </div>
   );

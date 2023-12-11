@@ -46,6 +46,7 @@ const Header = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log(user);
         //custom display name to display on header
         if (!!!user.displayName) {
           const u1 = user.email.substring(0, user.email.indexOf("@"));

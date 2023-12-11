@@ -38,6 +38,12 @@ const ProductFilter = () => {
     dispatch(FILTER_BY_CATEGORY({ products, category: cat }));
   };
 
+  const clearFilter = () => {
+    setCategory("All");
+    setBrand("All");
+    setPrice(maxPrice);
+  };
+
   useEffect(() => {
     dispatch(FILTER_BY_BRAND({ products, brand }));
   }, [brand, dispatch]);
@@ -88,7 +94,9 @@ const ProductFilter = () => {
         />
       </div>
       <br />
-      <button className="--btn --btn-danger">Clear Filter</button>
+      <button onClick={clearFilter} className="--btn --btn-danger">
+        Clear Filter
+      </button>
     </div>
   );
 };
