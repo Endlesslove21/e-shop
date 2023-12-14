@@ -31,6 +31,6 @@ p {
   }
 }
 .active {
-  background-color: var(--color-danger);
+  background-color: orange;
   color: #fff;
 }
