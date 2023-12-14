@@ -16,10 +16,10 @@ import {
 import { toast } from "react-toastify";
 import CheckoutForm from "../../components/checkoutForm/CheckoutForm";
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const Checkout = () => {
-  const [message, setMessage] = useState("Initializing checkout");
+  const [message, setMessage] = useState("Initializing checkout...");
   const [clientSecret, setClientSecret] = useState("");
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
