@@ -1,13 +1,6 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Loader from "../../components/loader/index";
-import useFetchCollection from "../../customHooks/useFetchCollection";
-import { selectUserID } from "../../redux/slice/authSlice";
-import { selectOrderHistory, STORE_ORDERS } from "../../redux/slice/orderSlice";
-import styles from "./OrderHistory.module.scss";
+import React from "react";
 
-const OrderHistory = () => {
+const OrderDetails = () => {
   const { data, isLoading } = useFetchCollection("orders");
   const orders = useSelector(selectOrderHistory);
   const userID = useSelector(selectUserID);
@@ -93,4 +86,4 @@ const OrderHistory = () => {
   );
 };
 
-export default OrderHistory;
+export default OrderDetails;
