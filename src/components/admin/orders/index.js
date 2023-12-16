@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import useFetchCollection from "../../../customHooks/useFetchCollection";
+
+import {
+  selectOrderHistory,
+  STORE_ORDERS,
+} from "../../../redux/slice/orderSlice";
+
+import styles from "./Order.module.scss";
+import Loader from "../../loader";
 
 const Orders = () => {
   const { data, isLoading } = useFetchCollection("orders");
   const orders = useSelector(selectOrderHistory);
-  const userID = useSelector(selectUserID);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -13,23 +23,21 @@ const Orders = () => {
   }, [dispatch, data]);
 
   const handleClick = (id) => {
-    navigate(`/order-details/${id}`);
+    navigate(`/admin/order-details/${id}`);
   };
 
-  const filteredOrders = orders.filter((order) => order.userID === userID);
-
   return (
-    <section>
-      <div className={`container ${styles.order}`}>
+    <>
+      <div className={styles.order}>
         <h2>Your Order History</h2>
         <p>
-          Open an order to leave a <b>Product Review</b>
+          Open an order to <b>Change order status</b>
         </p>
         <br />
         <>
           {isLoading && <Loader />}
           <div className={styles.table}>
-            {filteredOrders.length === 0 ? (
+            {orders.length === 0 ? (
               <p>No order found</p>
             ) : (
               <table>
@@ -43,7 +51,7 @@ const Orders = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredOrders.map((order, index) => {
+                  {orders.map((order, index) => {
                     const {
                       id,
                       orderDate,
@@ -82,7 +90,7 @@ const Orders = () => {
           </div>
         </>
       </div>
-    </section>
+    </>
   );
 };
 

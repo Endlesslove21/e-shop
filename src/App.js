@@ -4,17 +4,16 @@ import "react-toastify/dist/ReactToastify.css";
 // Pages
 import { Home, Contact, Login, Register, Reset, Admin } from "./pages";
 // Components
-import { Header, Footer } from "./components";
-import AdminOnlyRoute from "./components/adminOnlyRoute";
-import ProductDetails from "./components/product/productDetails";
+import { Header, Footer, ProductDetails } from "./components";
 import Cart from "./pages/cart/Cart";
 import CheckoutDetails from "./pages/checkout/CheckoutDetails";
 import Checkout from "./pages/checkout/Checkout";
 import CheckoutSuccess from "./pages/checkout/CheckoutSuccess";
 import OrderHistory from "./pages/orderHistory/OrderHistory";
 import OrderDetails from "./pages/orderDetails/OrderDetails";
+import NotFound from "./pages/notFound/NotFound";
+import AdminOnlyRoute from "./components/adminOnlyRoute";
 import ReviewProduct from "./components/reviewProduct/ReviewProduct";
-// import NotFound from "./pages/notFound/NotFound";
 
 function App() {
   return (
@@ -46,7 +45,7 @@ function App() {
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/order-details/:id" element={<OrderDetails />} />
           <Route path="/review-product/:id" element={<ReviewProduct />} />
-          {/* <Route path="*" element={<NotFound />} /> */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
       </BrowserRouter>

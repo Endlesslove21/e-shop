@@ -1,88 +1,92 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useFetchDocument from "../../../customHooks/useFetchDocument";
+import styles from "./OrderDetails.module.scss";
+import spinnerImg from "../../../assets/spinner.jpg";
+import { Link, useParams } from "react-router-dom";
+import ChangeOrderStatus from "../changeOrderStatus/ChangeOrderStatus";
 
 const OrderDetails = () => {
-  const { data, isLoading } = useFetchCollection("orders");
-  const orders = useSelector(selectOrderHistory);
-  const userID = useSelector(selectUserID);
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [order, setOrder] = useState(null);
+  const { id } = useParams();
+  const { document } = useFetchDocument("orders", id);
 
   useEffect(() => {
-    dispatch(STORE_ORDERS(data));
-  }, [dispatch, data]);
-
-  const handleClick = (id) => {
-    navigate(`/order-details/${id}`);
-  };
-
-  const filteredOrders = orders.filter((order) => order.userID === userID);
+    setOrder(document);
+  }, [document]);
 
   return (
-    <section>
-      <div className={`container ${styles.order}`}>
-        <h2>Your Order History</h2>
-        <p>
-          Open an order to leave a <b>Product Review</b>
-        </p>
+    <>
+      <div className={styles.table}>
+        <h2>Order Details</h2>
+        <div>
+          <Link to="/admin/orders">&larr; Back To Orders</Link>
+        </div>
         <br />
-        <>
-          {isLoading && <Loader />}
-          <div className={styles.table}>
-            {filteredOrders.length === 0 ? (
-              <p>No order found</p>
-            ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>s/n</th>
-                    <th>Date</th>
-                    <th>Order ID</th>
-                    <th>Order Amount</th>
-                    <th>Order Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredOrders.map((order, index) => {
-                    const {
-                      id,
-                      orderDate,
-                      orderTime,
-                      orderAmount,
-                      orderStatus,
-                    } = order;
-                    return (
-                      <tr key={id} onClick={() => handleClick(id)}>
-                        <td>{index + 1}</td>
-                        <td>
-                          {orderDate} at {orderTime}
-                        </td>
-                        <td>{id}</td>
-                        <td>
-                          {"$"}
-                          {orderAmount}
-                        </td>
-                        <td>
-                          <p
-                            className={
-                              orderStatus !== "Delivered"
-                                ? `${styles.pending}`
-                                : `${styles.delivered}`
-                            }
-                          >
-                            {orderStatus}
-                          </p>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </>
+        {order === null ? (
+          <img src={spinnerImg} alt="Loading..." style={{ width: "50px" }} />
+        ) : (
+          <>
+            <p>
+              <b>Order ID</b> {order.id}
+            </p>
+            <p>
+              <b>Order Amount</b> ${order.orderAmount}
+            </p>
+            <p>
+              <b>Order Status</b> {order.orderStatus}
+            </p>
+            <p>
+              <b>Shipping Address</b>
+              <br />
+              Address: {order.shippingAddress.line1},
+              {order.shippingAddress.line2}, {order.shippingAddress.city}
+              <br />
+              State: {order.shippingAddress.state}
+              <br />
+              Country: {order.shippingAddress.country}
+            </p>
+            <br />
+            <table>
+              <thead>
+                <tr>
+                  <th>s/n</th>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {order.cartItems.map((cart, index) => {
+                  const { id, name, price, imageURL, cartQuantity } = cart;
+                  return (
+                    <tr key={id}>
+                      <td>
+                        <b>{index + 1}</b>
+                      </td>
+                      <td>
+                        <p>
+                          <b>{name}</b>
+                        </p>
+                        <img
+                          src={imageURL}
+                          alt={name}
+                          style={{ width: "100px" }}
+                        />
+                      </td>
+                      <td>{price}</td>
+                      <td>{cartQuantity}</td>
+                      <td>{(price * cartQuantity).toFixed(2)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
+        )}
+        <ChangeOrderStatus order={order} id={id} />
       </div>
-    </section>
+    </>
   );
 };
 
