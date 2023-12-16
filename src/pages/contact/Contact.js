@@ -69,23 +69,23 @@ const Contact = () => {
           <div className={styles.details}>
             <Card cardClass={styles.card2}>
               <h3>Our Contact Information</h3>
-              <p>Fill the form or contact us via other channels listed below</p>
+              <p>Fill the form or contact us via my Information</p>
               <div className={styles.icons}>
                 <span>
                   <FaPhoneAlt />
-                  <p>+234 705 141 6545</p>
+                  <p>+84 385 027 756</p>
                 </span>
                 <span>
                   <FaEnvelope />
-                  <p>Support@eshop.com</p>
+                  <p>ngphi66189@gmail.com</p>
                 </span>
                 <span>
                   <GoLocation />
-                  <p>Abuja, Nigeria</p>
+                  <p>Ha Noi, Viet Nam</p>
                 </span>
                 <span>
                   <FaTwitter />
-                  <p>@ZinoTrust</p>
+                  <p>@HPhi</p>
                 </span>
               </div>
             </Card>
